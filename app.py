@@ -1,7 +1,7 @@
 import streamlit as st
-from langchain_community.tools.tavily_search import TavilySearchResults
 from dotenv import load_dotenv
 import os
+from agents.agente_principal import AgentePrincipal
 
 load_dotenv()
 
@@ -9,10 +9,7 @@ st.set_page_config(page_title="ChatBot do Schulze", page_icon="🤖")
 st.title("Bem vindos ao ChatBot do Schulze!")
 
 def generate_response(input_text):
-    search = TavilySearchResults(
-        max_results=2
-    )
-    tools = [search]
+    pass
     
 groq_api_key = os.getenv("GROQ_API_KEY")
 if not groq_api_key or not groq_api_key.startswith("gsk_"):

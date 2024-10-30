@@ -4,3 +4,9 @@ langchain
 python-dotenv
 langchain_community
 langgraph
+IPython
+beautifulsoup4
+tiktoken
+sentence-transformers
+chromadb
+selenium
