@@ -160,7 +160,7 @@ for url in urls_vendas:
 
 driver.quit()
 
-text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=100, chunk_overlap=50)
+text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=500, chunk_overlap=200)
 
 docs_list_cobranca = [text_splitter.split_documents([doc]) for doc in docs_cobranca]
 docs_list_gestao = [text_splitter.split_documents([doc]) for doc in docs_gestao]
@@ -190,7 +190,8 @@ def create_retrievers_system(retrievers, names, docs_list):
         vectorstore = Chroma.from_documents(
             documents=split,
             collection_name=name,
-            embedding= HuggingFaceEmbeddings()
+            embedding= HuggingFaceEmbeddings(),
+            persist_directory="./data"
         )
         retriever_tool = create_retriever_tool(vectorstore.as_retriever(search_kwargs={"k": 3}), f"retrieve_{name}_posts", f"Ferramenta para buscar informações sobre {name}")
         retrievers.update({name: retriever_tool})
@@ -300,7 +301,7 @@ def generate(state):
     print("-"*8)
     question = state["question"]
     documents = state["documents"]
-    
+    print(documents)
     generation = rag_chain.invoke({"context": documents, "question": question})
     return {"documents": documents, "question": question, "generation": generation}
 
@@ -385,7 +386,7 @@ def send_question(question):
     })
     print(result.get("generation"))
     
-# send_question("Bom dia, como visualizo clientes que estão na fila de cobrança? No módulo de cobrança")
+send_question("Bom dia, como visualizo clientes que estão na fila de cobrança? No módulo de cobrança")
 # send_question("Bom dia, como que eu envio comprovante de pagamento para ter a liberação do meu saldo? No módulo de assinatura")
 # send_question("Bom dia, como que eu olho o detalhamento de uma análise de crédito? No módulo de gestão")
-send_question("Bom dia, como que eu cadastro um cliente? No Módulo de vendas?")
+# send_question("Bom dia, como que eu cadastro um cliente? No Módulo de vendas?")
