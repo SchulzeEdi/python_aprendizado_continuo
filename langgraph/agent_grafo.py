@@ -127,8 +127,7 @@ names_perguntas_frequentes = [
 ]
 
 
-# docs = [WebBaseLoader(url).load() for url in urls_cobranca]
-driver = webdriver.Chrome()  # Substitua por seu navegador, se necessário
+driver = webdriver.Chrome()
 
 docs_cobranca = []
 for url in urls_cobranca:
@@ -173,16 +172,20 @@ docs_list_assinatura = [chunk for sublist in docs_list_assinatura for chunk in s
 docs_list_vendas = [chunk for sublist in docs_list_vendas for chunk in sublist]
 
 
-# docs_list = [item for sublist in docs for item in sublist]
-# text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-#     chunk_size=100, chunk_overlap=50
-# )
-
 retrievers_cobranca = {}
 retrievers_gestao = {}
 retrievers_assinatura = {}
 retrievers_vendas = {}
 retrievers_perguntas_frequentes = {}
+
+# def load_vectorstore(retrievers, name):
+#     vectorstore = Chroma(
+#         collection_name=name,
+#         persist_directory="./data",
+#     ).as_retriever()
+#     print(vectorstore)
+#     retrievers.update({name: vectorstore})
+#     return retrievers
 
 def create_retrievers_system(retrievers, names, docs_list):
     for doc, name in zip(docs_list, names):
@@ -201,6 +204,12 @@ retrievers_cobranca = create_retrievers_system(retrievers_cobranca, names_cobran
 retrievers_gestao = create_retrievers_system(retrievers_gestao, names_gestao, docs_list_gestao)
 retrievers_vendas = create_retrievers_system(retrievers_vendas, names_vendas, docs_list_vendas)
 retrievers_assinatura = create_retrievers_system(retrievers_assinatura, names_assinatura, docs_list_assinatura)
+
+# retrievers_cobranca = load_vectorstore(retrievers_cobranca, name=names_cobranca[0])
+# retrievers_gestao = load_vectorstore(retrievers_gestao, name=names_gestao[0])
+# retrievers_vendas = load_vectorstore(retrievers_vendas, name=names_vendas[0])
+# retrievers_assinatura = load_vectorstore(retrievers_assinatura, name=names_assinatura[0])
+
 # retrievers_perguntas_frequentes = create_retrievers_system(retrievers_perguntas_frequentes, names_perguntas_frequentes)
 
 
@@ -329,7 +338,6 @@ def retrieve_assinatura(state):
     documents = retrievers_assinatura.get(collection).invoke(question)
     return {"documents": documents, "question": question}
 
-#Retrieve do módulo de vendas
 def retrieve_vendas(state):
     question = state['question']
     collection = RAG_router.invoke({"question":question}).path
@@ -386,7 +394,7 @@ def send_question(question):
     })
     print(result.get("generation"))
     
-send_question("Bom dia, como visualizo clientes que estão na fila de cobrança? No módulo de cobrança")
+# send_question("Bom dia, como visualizo clientes que estão na fila de cobrança? No módulo de cobrança")
 # send_question("Bom dia, como que eu envio comprovante de pagamento para ter a liberação do meu saldo? No módulo de assinatura")
-# send_question("Bom dia, como que eu olho o detalhamento de uma análise de crédito? No módulo de gestão")
+send_question("Bom dia, como que eu olho o detalhamento de uma análise de crédito? No módulo de gestão")
 # send_question("Bom dia, como que eu cadastro um cliente? No Módulo de vendas?")
