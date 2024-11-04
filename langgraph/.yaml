@@ -1,8 +1,0 @@
-version: '3.8'
-services:
-  my_chroma_app:
-    build: .
-    volumes:
-      - ./chroma_data:/data/chroma_db
-    ports:
-      - "8000:8000"

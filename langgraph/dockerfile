@@ -1,9 +1,0 @@
-FROM python:3.10-slim
-
-WORKDIR /app
-
-COPY . /app
-
-RUN pip install chromadb selenium 
-
-ENV CHROMA_DB_PATH=/data/chroma_db 
