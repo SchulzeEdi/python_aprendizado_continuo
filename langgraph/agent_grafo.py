@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-load_dotenv()
 
 from langchain.tools.retriever import create_retriever_tool
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -16,8 +15,9 @@ from typing import List
 
 from typing_extensions import TypedDict
 
-from langgraph.graph import END, StateGraph, START
+from langgraph.graph import StateGraph, START, END
 
+load_dotenv()
 
 retrievers_cobranca = {}
 retrievers_gestao = {}
@@ -97,11 +97,12 @@ class RouteRAG(BaseModel):
 structured_llm_router = llm.with_structured_output(RouteQuery)
 
 system = """Você é um especialista em encaminhar o usuário para o local correto.
-Existem quatro possibilidades:
+Existem cinco possibilidades:
 Cobranca quando o usuário está com dúvida sobre cobrança.
 Gestão quando o usuário está com dúvida sobre gestão.
 Assinatura quando o usuário está com dúvida sobre assinatura.
 Vendas quando o usuário está com dúvida sobre vendas.
+Aleatorios que é quando o usuário não pergunta nada sobre o sistema.
 """
 
 route_prompt = ChatPromptTemplate.from_messages(
@@ -156,15 +157,20 @@ def generate(state):
     print("-"*8)
     question = state["question"]
     documents = state["documents"]
-    generation = rag_chain.invoke({"context": documents, "question": question})
-    return {"documents": documents, "question": question, "generation": generation}
 
-def generate_question(state):
+    generation = rag_chain.invoke({"context": documents, "question": question})
+    
+    response = {"documents": documents, "question": question, "generation": generation}
+    return response
+
+def generate_random(state):
     print("Gerando resposta")
     print("-"*8)
     question = state["question"]
-    generation = rag_chain.invoke({"question": question})
-    return {"question": question, "generation": generation}
+
+    generation = rag_chain.invoke({"context": '', "question": question})
+    response = {"question": question, "generation": generation}
+    return response
 
 def retrieve_cobranca(state):
     question = state["question"]
@@ -172,6 +178,7 @@ def retrieve_cobranca(state):
     print(f"Realizando a busca vetorial no banco de {collection}")
 
     documents = retrievers_cobranca.get(collection).invoke(question)
+
     return {"documents" : documents, "question": question}
 
 def retrieve_gestao(state):
@@ -180,7 +187,7 @@ def retrieve_gestao(state):
     print(f"Realizando a busca vetorial no banco de {collection}")
 
     documents = retrievers_gestao.get(collection).invoke(question)
-    print(documents)
+
     return {"documents": documents, "question": question}
 
 def retrieve_assinatura(state):
@@ -189,6 +196,7 @@ def retrieve_assinatura(state):
     print(f"Realizando a busca vetorial no banco de {collection}")
 
     documents = retrievers_assinatura.get(collection).invoke(question)
+
     return {"documents": documents, "question": question}
 
 def retrieve_vendas(state):
@@ -197,11 +205,12 @@ def retrieve_vendas(state):
     print(f"Realizando a busca vetorial no banco de {collection}")
 
     documents = retrievers_vendas.get(collection).invoke(question)
+
     return {"documents": documents, "question": question}
 
 workflow = StateGraph(GraphState)
 workflow.add_node("generate", generate)
-workflow.add_node("generate_question", generate_question)
+workflow.add_node("generate_random", generate_random)
 workflow.add_node("retrieve_cobranca", retrieve_cobranca)
 workflow.add_node("retrieve_gestao", retrieve_gestao)
 workflow.add_node("retrieve_assinatura", retrieve_assinatura)
@@ -215,21 +224,16 @@ workflow.add_conditional_edges(
         "Gestao": "retrieve_gestao",
         "Assinatura": "retrieve_assinatura",
         "Vendas": "retrieve_vendas",
-        "Aleatorios": "generate_question",
+        "Aleatorios": "generate_random",
     }
 )
 workflow.add_edge("retrieve_cobranca", "generate")
 workflow.add_edge("retrieve_gestao", "generate")
 workflow.add_edge("retrieve_assinatura", "generate")
 workflow.add_edge("retrieve_vendas", "generate")
-workflow.add_edge("generate_question", "generate")
+workflow.add_edge("generate_random", END)
 
 app = workflow.compile()
-
-image_data = app.get_graph().draw_mermaid_png()
-
-with open("grafo_ia.png", "wb") as f:
-    f.write(image_data)
 
 def send_question(question):
     result = app.invoke(input = {

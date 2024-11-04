@@ -10,7 +10,7 @@ st.title("Bem vindos ao ChatBot do Schulze!")
 
 def generate_response(input_text):
     response = send_question(input_text)
-    st.text_area(response)
+    st.write(response)
     
 groq_api_key = os.getenv("GROQ_API_KEY")
 if not groq_api_key or not groq_api_key.startswith("gsk_"):
