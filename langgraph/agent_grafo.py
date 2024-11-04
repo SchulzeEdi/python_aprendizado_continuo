@@ -44,7 +44,7 @@ names_cobranca = [
 def load_vectorstore(retrievers, name):
     vectorstore = Chroma(
         collection_name=name,
-        persist_directory="./data",
+        persist_directory="langgraph/data",
         embedding_function= HuggingFaceEmbeddings()
     )
     retriever_tool = create_retriever_tool(vectorstore.as_retriever(search_kwargs={"k": 3}), f"retrieve_{name}_posts", f"Ferramenta para buscar informações sobre {name}")
@@ -178,7 +178,6 @@ def retrieve_cobranca(state):
     print(f"Realizando a busca vetorial no banco de {collection}")
 
     documents = retrievers_cobranca.get(collection).invoke(question)
-
     return {"documents" : documents, "question": question}
 
 def retrieve_gestao(state):

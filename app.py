@@ -5,8 +5,8 @@ from langgraph.agent_grafo import send_question
 
 load_dotenv()
 
-st.set_page_config(page_title="ChatBot do Schulze", page_icon="🤖")
-st.title("Bem vindos ao ChatBot do Schulze!")
+st.set_page_config(page_title="ChatBot do Meu Crediário", page_icon="🤖")
+st.title("Bem vindos ao ChatBot do Meu Crediário!")
 
 def generate_response(input_text):
     response = send_question(input_text)

@@ -13,4 +13,3 @@ selenium
 absl-py
 astunparse
 tf-keras
-sentence-transformers

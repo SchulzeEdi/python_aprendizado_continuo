@@ -1,7 +1,5 @@
 # Python aprendizado continuo
 
-## Segue como o projeto foi estruturado e como colocar ele em funcionamento:
-
 O projeto consiste em instalar as dependências necessárias, caso rode com Linux, alguns erros podem ocorrer por causa
 do Selenium, caso use windows, fica mais tranquilo.
 
