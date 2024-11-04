@@ -1,2 +1,3 @@
 .env
-python_aprendizado_continuo
+myenv
+__pycache__

@@ -10,3 +10,7 @@ tiktoken
 sentence-transformers
 chromadb
 selenium
+absl-py
+astunparse
+tf-keras
+sentence-transformers
