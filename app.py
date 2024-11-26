@@ -1,7 +1,7 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from langgraph.agent_grafo import send_question
+from bot.agent_grafo import send_question
 
 load_dotenv()
 
@@ -17,7 +17,7 @@ if not groq_api_key or not groq_api_key.startswith("gsk_"):
     st.warning("Por favor, insira uma chave válida de GROQ no arquivo .env", icon="⚠")
 else:
     with st.form("my_form"):
-        text = st.text_area("Coloque seu texto abaixo:", "Sobre o que vamos conversar hoje?")
+        text = st.text_area("Coloque seu texto abaixo:", "")
         submitted = st.form_submit_button("Submit")
         if submitted:
             generate_response(text)
