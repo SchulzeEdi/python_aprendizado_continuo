@@ -268,7 +268,7 @@ for url in urls_vendas:
 
 driver.quit()
 
-text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=300, chunk_overlap=100)
+text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=2000, chunk_overlap=100)
 
 docs_list_cobranca = [text_splitter.split_documents([doc]) for doc in docs_cobranca]
 docs_list_gestao = [text_splitter.split_documents([doc]) for doc in docs_gestao]

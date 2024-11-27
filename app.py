@@ -1,9 +1,6 @@
 import streamlit as st
-from dotenv import load_dotenv
 import os
 from bot.agent_grafo import send_question
-
-load_dotenv()
 
 st.set_page_config(page_title="ChatBot do Meu Crediário", page_icon="🤖")
 st.title("Bem vindos ao ChatBot do Meu Crediário!")

@@ -1,8 +1,8 @@
 from bot.data_vector.load_vector_store import retrievers_cobranca, retrievers_gestao, retrievers_assinatura, retrievers_vendas
-from router.router import RAG_router
-from router.router import question_router
+from bot.router.router import RAG_router
+from bot.router.router import question_router
 
-from llm.llm import llm
+from bot.llm.llm import llm
 
 from langchain_core.output_parsers import StrOutputParser 
 

@@ -3,6 +3,9 @@ from pydantic import BaseModel, Field
 from typing import Literal
 from langchain_core.prompts import ChatPromptTemplate
 
+from dotenv import load_dotenv
+load_dotenv()
+
 llm = ChatGroq(model_name="mixtral-8x7b-32768")
 
 class RouteRAG(BaseModel):
